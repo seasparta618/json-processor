@@ -38,9 +38,15 @@ func main() {
 		fmt.Println("Error: API_HOST is not set in .env file")
 		return
 	}
+	apiToken := os.Getenv("API_TOKEN")
+	if apiToken == "" {
+		fmt.Println("Error: API_TOKEN is not set in .env file")
+		return
+	}
 	// Initialize configuration
 	cfg := &config.Config{
-		APIHost: apiHost,
+		APIHost:  apiHost,
+		APIToken: apiToken,
 	}
 
 	// Set up validator and translator
@@ -68,5 +74,5 @@ func main() {
 		fmt.Println("Failed to save enquiry:", err)
 		return
 	}
-	fmt.Println("Successfully saved enquiry")
+	fmt.Println("request successfully sent")
 }

@@ -1,5 +1,6 @@
 package config
 
 type Config struct {
-	APIHost string
+	APIHost  string
+	APIToken string
 }
