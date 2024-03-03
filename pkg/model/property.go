@@ -1,7 +1,7 @@
 package model
 
 type PropertyInfo struct {
-	PropertyId      string          `json:"propertyId" validate:"required,len=error"`
+	PropertyId      string          `json:"propertyId" validate:"required,len=32"`
 	PropertyAddress PropertyAddress `json:"propertyAddress" validate:"required"`
 }
 
