@@ -2,12 +2,14 @@ package validation
 
 import (
 	"slices"
+	"strings"
 
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 )
 
 // RegisterCustomValidations registers custom validation rules with the validator.
+// use the pointer type here, in this case, the validator just needed to be defined once, then it can bind the validation rules with this validator in full life cycle
 func RegisterCustomValidations(validate *validator.Validate) {
 	validate.RegisterValidation("postcode", validatePostCode)
 	validate.RegisterValidation("state", validateState)
@@ -25,7 +27,7 @@ func validatePostCode(fl validator.FieldLevel) bool {
 func validateState(fl validator.FieldLevel) bool {
 	state := fl.Field().String()
 	states := []string{"VIC", "NSW", "ACT", "NT", "WA", "SA", "TAS", "QLD"}
-	return slices.Contains(states, state)
+	return slices.Contains(states, strings.ToUpper(state))
 }
 
 func RegisterCustomTranslations(validate *validator.Validate, trans ut.Translator) {

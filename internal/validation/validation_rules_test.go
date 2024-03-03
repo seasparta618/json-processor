@@ -43,6 +43,7 @@ func TestValidateState(t *testing.T) {
 		{"NSW", true},
 		{"XYZ", false},
 		{"ACT", true},
+		{"NSS", false},
 	}
 
 	for _, tt := range tests {

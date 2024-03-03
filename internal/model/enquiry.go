@@ -7,7 +7,7 @@ type Enquiry struct {
 	EnquiryTitle        string         `json:"enquiryTitle" validate:"required"`
 	EnquiryDate         time.Time      `json:"enquiryDate" validate:"required"`
 	EnquirerInfo        EnquirerInfo   `json:"enquirerInfo" validate:"required"`
-	EnquiriedProperties []PropertyInfo `json:"properties" validate:"required"`
+	EnquiriedProperties []PropertyInfo `json:"properties" validate:"required,min=1,dive"`
 }
 
 type EnquirerInfo struct {
