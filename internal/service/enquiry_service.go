@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"json-processor/config"
 	httpclient "json-processor/internal/http"
@@ -24,10 +25,17 @@ func NewEnquiryService(jsonValidator IJSONService[model.Enquiry], httpClient htt
 }
 
 func (es *EnquiryService) SaveEnquiry(jsonData []byte) error {
-	_, err := es.JSONValidator.ValidateJSON(jsonData)
+	enquiry, err := es.JSONValidator.ValidateJSON(jsonData)
 	if err != nil {
-		return err
+		return fmt.Errorf("validation failed: %w", err)
 	}
+
+	jsonOutput, err := json.MarshalIndent(enquiry, "", "  ")
+	if err != nil {
+		return fmt.Errorf("error marshaling JSON: %w", err)
+	}
+
+	fmt.Println(string(jsonOutput))
 
 	apiEndpoint := "/enquiry/save/"
 	uri := es.Config.APIHost + apiEndpoint
@@ -40,7 +48,6 @@ func (es *EnquiryService) SaveEnquiry(jsonData []byte) error {
 
 	resp, err := es.HTTPClient.Do(req)
 	if err != nil {
-		// should have specified error handling here, it includes retry or wrap the error, but requirement did not specify
 		return fmt.Errorf("request failed: %w", err)
 	}
 	defer resp.Body.Close()
