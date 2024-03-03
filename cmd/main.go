@@ -7,10 +7,15 @@ import (
 	"json-processor/internal/service"
 	"json-processor/internal/util"
 	"json-processor/internal/validation"
+	"net/http"
+	"os"
+
+	config "json-processor/config"
 
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -21,6 +26,21 @@ func main() {
 	if jsonFilePath == "" {
 		fmt.Println("Usage: json-processor --file-path <path to JSON file>")
 		return
+	}
+
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("Error loading .env file")
+		return
+	}
+	// Get API_HOST from environment variables
+	apiHost := os.Getenv("API_HOST")
+	if apiHost == "" {
+		fmt.Println("Error: API_HOST is not set in .env file")
+		return
+	}
+	// Initialize configuration
+	cfg := &config.Config{
+		APIHost: apiHost,
 	}
 
 	// Set up validator and translator
@@ -41,13 +61,12 @@ func main() {
 		fmt.Println("Error reading JSON file:", err)
 		return
 	}
-
-	// Validate JSON
-	_, err = jsonService.ValidateJSON([]byte(jsonData))
+	httpClient := &http.Client{} // Use the standard http.Client
+	enquiryService := service.NewEnquiryService(jsonService, httpClient, cfg)
+	err = enquiryService.SaveEnquiry([]byte(jsonData))
 	if err != nil {
-		fmt.Println("Error validating JSON:", err)
+		fmt.Println("Failed to save enquiry:", err)
 		return
 	}
-
-	fmt.Println("JSON validation passed!")
+	fmt.Println("Successfully saved enquiry")
 }

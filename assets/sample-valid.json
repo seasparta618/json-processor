@@ -1,0 +1,25 @@
+{
+    "enquiryId": "123e4567e89b12d3a456426614174000",
+    "enquiryTitle": "Property Enquiry from ....",
+    "enquiryDate": "2023-04-07T12:00:00Z",
+    "enquirerInfo": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "mobileNumber": "0412345678",
+      "emailAddress": "john.doe@example.com"
+    },
+    "properties": [
+      {
+        "propertyId": "123e4567e89b12d3a456426614174000",
+        "propertyAddress": {
+          "streetName": "Main Street",
+          "streetNumber": "123",
+          "unitNumber": "2A",
+          "suburbName": "Springfield",
+          "postCode": 2000,
+          "state": "NSW"
+        }
+      }
+    ]
+  }
+  

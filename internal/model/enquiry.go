@@ -13,6 +13,6 @@ type Enquiry struct {
 type EnquirerInfo struct {
 	FirstName    string `json:"firstName" validate:"required"`
 	LastName     string `json:"lastName" validate:"required"`
-	MobileNumber string `json:"mobileNumber" validate:"required,startswith=04,len=10"`
+	MobileNumber string `json:"mobileNumber" validate:"required,mobile"`
 	EmailAddress string `json:"emailAddress" validate:"required,email"`
 }
