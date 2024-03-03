@@ -3,12 +3,17 @@ package validation
 import (
 	"testing"
 
+	"github.com/go-playground/locales/en"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 )
 
 func TestValidatePostCode(t *testing.T) {
 	validate := validator.New()
-	RegisterCustomValidations(validate)
+	enLocale := en.New()
+	uni := ut.New(enLocale, enLocale)
+	trans, _ := uni.GetTranslator("en")
+	RegisterCustomValidations(validate, trans)
 
 	tests := []struct {
 		postCode int
@@ -33,7 +38,10 @@ func TestValidatePostCode(t *testing.T) {
 
 func TestValidateState(t *testing.T) {
 	validate := validator.New()
-	RegisterCustomValidations(validate)
+	enLocale := en.New()
+	uni := ut.New(enLocale, enLocale)
+	trans, _ := uni.GetTranslator("en")
+	RegisterCustomValidations(validate, trans)
 
 	tests := []struct {
 		state string

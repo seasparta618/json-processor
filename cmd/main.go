@@ -3,16 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	apperrors "json-processor/internal/error"
 	"json-processor/internal/model"
 	"json-processor/internal/service"
 	"json-processor/internal/util"
 	"json-processor/internal/validation"
 
 	"github.com/go-playground/locales/en"
-	universal_translator "github.com/go-playground/universal-translator"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
-	en_translations "github.com/go-playground/validator/v10/translations/en"
 )
 
 func main() {
@@ -28,37 +26,28 @@ func main() {
 	// Set up validator and translator
 	validate := validator.New()
 	enLocale := en.New()
-	uni := universal_translator.New(enLocale, enLocale)
+	uni := ut.New(enLocale, enLocale)
 	trans, _ := uni.GetTranslator("en")
-	en_translations.RegisterDefaultTranslations(validate, trans)
-	validation.RegisterCustomValidations(validate)
 
-	// Create JSON service
-	jsonService := service.JSONService[model.Enquiry]{
-		Validator: validate,
-	}
+	// Register custom validations
+	validation.RegisterCustomValidations(validate, trans)
 
-	// Create processor service
-	processorService := service.NewProcessorService(&jsonService)
+	// Create JSON service with translator
+	jsonService := service.NewJSONService[model.Enquiry](validate, trans)
 
 	// Read JSON input from the provided file path
 	jsonData, err := util.ReadFile(jsonFilePath)
 	if err != nil {
-		fmt.Println(apperrors.ErrorFileNotFound, err)
+		fmt.Println("Error reading JSON file:", err)
 		return
 	}
 
-	if len(jsonData) == 0 {
-		fmt.Println(apperrors.ErrorEmptyContent)
-		return
-	}
-
-	// Process data
-	err = processorService.ProcessData([]byte(jsonData))
+	// Validate JSON
+	_, err = jsonService.ValidateJSON([]byte(jsonData))
 	if err != nil {
-		fmt.Println("Error processing data:", "\n", err)
+		fmt.Println("Error validating JSON:", err)
 		return
 	}
 
-	fmt.Println("Data processed successfully!")
+	fmt.Println("JSON validation passed!")
 }
